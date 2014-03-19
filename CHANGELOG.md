@@ -1,6 +1,43 @@
 Change Log
 ===============================================================================
 
+Version 1.4.2 *(2014-03-07)*
+----------------------------
+* LIB: new expand/collapse methods are now available also for `CardCursorAdapter` [(doc)](https://github.com/gabrielemariotti/cardslib/blob/master/doc/EXPAND.md#cardexpand-and-cardlistview)
+  It contains a **BREAKING CHANGE** with CardCursorApdater and Expand feature. Read the above link to migrate your code.
+
+
+Version 1.4.0 *(2014-03-02)*
+----------------------------
+* LIB: expand/collapse methods are completely new.(Fixed issues with smooth scroll, proper height measure, parent lose when expanded view isn't entirely visible...)
+* LIB: Added a feature to add the PopupMenu in CardHeader entirely from code [(doc)](https://github.com/gabrielemariotti/cardslib/tree/master/doc/HEADER.md#standard-header-with-the-overflow-botton-and-popupmenu-built-programmatically)
+* DEMO: Added an example with PopupMenu in CardHeader built programmatically (in Header screen)
+* DEMO-Extras: updated all libraries.
+
+
+Version 1.3.0 *(2014-01-25)*
+----------------------------
+* LIB: Added a `CardGridArrayMultiChoiceAdapter` [(doc)](https://github.com/gabrielemariotti/cardslib/tree/master/doc/CARDGRID.md#using-a-cardgrid-in-multichoicemode)
+* LIB: Added a `CardArrayMultiChoiceAdapter` [(doc)](https://github.com/gabrielemariotti/cardslib/tree/master/doc/CARDLIST.md#using-a-cardlist-in-multichoicemode)
+* LIB: Added a `CardHeader.OnPrepareCardHeaderPopupMenuListener`  to customize the popupMenu dynamically.[(doc)](https://github.com/gabrielemariotti/cardslib/tree/master/doc/HEADER.md#standard-header-with-the-overflow-botton-and-popup-menu)
+* DEMO: Added an example with CardGridArrayMultiChoiceAdapter
+* DEMO: Added an example with CardArrayMultiChoiceAdapter
+* DEMO: Added an example with the popupMenu changed dynamically (in Header screen)
+* Migrated library and demo to gradle 1.10 and gradle-plugin 0.8.0
+
+
+Version 1.2.0 *(2014-01-07)*
+----------------------------
+* LIB: Added a feature to enable the expand/collapse action anywhere not only on button header [(doc)](https://github.com/gabrielemariotti/cardslib/blob/master/doc/EXPAND.md#expand-the-card-by-clicking-on-different-view)
+* LIB: Added a feature to provide a custom undoBar [(doc)](https://github.com/gabrielemariotti/cardslib/blob/master/doc/CARDLIST.md#swipe-and-undo-with-a-custom-undobar)
+* DEMO: Added a new section CardExpand with new feature to enable the expand/collapse action anywhere
+* LIB: Fixed some issues with swipe action: swipe with ExpandCard, swipe with cards with different height, un-highlight items on swipe, swipe and onClickListener events
+* LIB: Fixed overflow rounded icon in xxhdpi resources
+* LIB: Fixed margin to default title on Header
+* LIB: Added a right margin on header buttons
+* Migrated library and demo to gradle 1.9 and gradle-plugin 0.7.0
+
+
 Version 1.1.0 *(2013-12-16)*
 ----------------------------
 * LIB: Added a `CustomSource` interface to load the CardThumbnails from your custom source preserving the built-in feature as AsyncTask and LRUCache. [(doc)](https://github.com/gabrielemariotti/cardslib/tree/master/doc/THUMBNAIL.md#thumbnail-from-custom-source)
@@ -11,6 +48,7 @@ Version 1.1.0 *(2013-12-16)*
 * DEMO: Added examples with circular and rounded images (in Misc and Google Birthday screen)
 * DEMO: Added an example with a Card with contextual action mode in Card page [(doc)](https://github.com/gabrielemariotti/cardslib/tree/master/doc/CARD.md#using-card-with-contextual-action-mode)
 * DEMO: Added an example with Header with buttons on the left (in Header screen)
+
 
 
 Version 1.0.0 *(2013-12-03)*

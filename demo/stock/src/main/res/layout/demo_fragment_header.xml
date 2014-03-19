@@ -2,7 +2,7 @@
 
 <!--
   ~ *******************************************************************************
-  ~   Copyright (c) 2013 Gabriele Mariotti.
+  ~   Copyright (c) 2013-2014 Gabriele Mariotti.
   ~
   ~   Licensed under the Apache License, Version 2.0 (the "License");
   ~   you may not use this file except in compliance with the License.
@@ -58,6 +58,36 @@
 
             <it.gmariotti.cardslib.library.view.CardView
                 android:id="@+id/carddemo_header_overflow"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="12dp"/>
+
+            <!-- Standard Header with overflow button with dynamic menu-->
+            <TextView
+                style="@style/AppTheme.TitleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/demo_section_header_overflow_dynamic"/>
+
+            <it.gmariotti.cardslib.library.view.CardView
+                android:id="@+id/carddemo_header_overflow_dynamic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="12dp"
+                android:layout_marginRight="12dp"
+                android:layout_marginTop="12dp"/>
+
+            <!-- Standard Header with overflow button with dynamic menu-->
+            <TextView
+                style="@style/AppTheme.TitleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/demo_section_header_overflow_dynamic2"/>
+
+            <it.gmariotti.cardslib.library.view.CardView
+                android:id="@+id/carddemo_header_overflow_dynamic2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="12dp"

@@ -1,20 +1,22 @@
-package it.gmariotti.cardslib.library.view.listener;
-
 /*
- * Copyright 2013 Roman Nurik, Gabriele Mariotti
+ * ******************************************************************************
+ *   Copyright (c) 2013 Roman Nurik, 2013-2014 Gabriele Mariotti.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ *  *****************************************************************************
  */
+
+package it.gmariotti.cardslib.library.view.listener;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -48,6 +50,8 @@ public class UndoBarController {
     private Parcelable mUndoToken;
     private CharSequence mUndoMessage;
 
+    private UndoBarUIElements mUndoBarUIElements;
+
     /**
      * Interface to listen the undo controller actions
      */
@@ -59,12 +63,20 @@ public class UndoBarController {
     }
 
     public UndoBarController(View undoBarView, UndoListener undoListener) {
+        this (undoBarView,undoListener,null);
+    }
+
+    public UndoBarController(View undoBarView, UndoListener undoListener,UndoBarUIElements undoBarUIElements) {
         mBarView = undoBarView;
         mBarAnimator = mBarView.animate();
         mUndoListener = undoListener;
 
-        mMessageView = (TextView) mBarView.findViewById(R.id.list_card_undobar_message);
-        mBarView.findViewById(R.id.list_card_undobar_button)
+        if (undoBarUIElements==null)
+            undoBarUIElements = new DefaultUndoBarUIElements();
+        mUndoBarUIElements = undoBarUIElements;
+
+        mMessageView = (TextView) mBarView.findViewById(mUndoBarUIElements.getUndoBarMessageId());
+        mBarView.findViewById(mUndoBarUIElements.getUndoBarButtonId())
                 .setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -150,5 +162,79 @@ public class UndoBarController {
 
     public Parcelable getUndoToken(){
         return mUndoToken;
+    }
+
+
+    // -------------------------------------------------------------
+    //  Undo Custom Bar
+    // -------------------------------------------------------------
+
+    /**
+     * Interface to set the ui elements in undo bar
+     */
+    public interface UndoBarUIElements{
+
+        /**
+         * UndoBar id
+         * @return
+         */
+        public int getUndoBarId();
+
+        /**
+         * TextView Id which displays message
+         *
+         * @return
+         */
+        public int getUndoBarMessageId();
+
+        /**
+         * UndoButton Id
+         *
+         * @return
+         */
+        public int getUndoBarButtonId();
+
+
+    }
+
+    /**
+     * Default UndoBar
+     */
+    public static class DefaultUndoBarUIElements implements UndoBarUIElements {
+
+        public DefaultUndoBarUIElements(){};
+
+        @Override
+        public int getUndoBarId() {
+            return R.id.list_card_undobar;
+        }
+
+        @Override
+        public int getUndoBarMessageId() {
+            return R.id.list_card_undobar_message;
+        }
+
+        @Override
+        public int getUndoBarButtonId() {
+            return R.id.list_card_undobar_button;
+        }
+    };
+
+
+    /**
+     * Sets UndoBar UI Elements
+     *
+     * @return
+     */
+    public UndoBarUIElements getUndoBarUIElements() {
+        return mUndoBarUIElements;
+    }
+
+    /**
+     * Returns UndoBar UI Elements
+     * @param undoBarUIElements
+     */
+    public void setUndoBarUIElements(UndoBarUIElements undoBarUIElements) {
+        this.mUndoBarUIElements = undoBarUIElements;
     }
 }

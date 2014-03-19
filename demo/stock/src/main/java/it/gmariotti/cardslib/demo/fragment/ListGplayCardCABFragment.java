@@ -1,6 +1,6 @@
 /*
  * ******************************************************************************
- *   Copyright (c) 2013 Gabriele Mariotti.
+ *   Copyright (c) 2013-2014 Gabriele Mariotti.
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -96,6 +96,15 @@ public class ListGplayCardCABFragment extends BaseFragment {
                 card.setResourceIdThumbnail(R.drawable.ic_launcher);
             }
             card.init();
+
+            card.setOnLongClickListener(new Card.OnLongCardClickListener() {
+                @Override
+                public boolean onLongClick(Card card, View view) {
+                    return mCardArrayAdapter.startActionMode(getActivity());
+
+                }
+            });
+
             cards.add(card);
         }
 
@@ -120,7 +129,10 @@ public class ListGplayCardCABFragment extends BaseFragment {
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             super.onCreateActionMode(mode, menu);
-            mActionMode=mode;
+
+            mActionMode=mode; // to manage mode in your Fragment/Activity
+
+            //If you would like to inflate your menu
             MenuInflater inflater = mode.getMenuInflater();
             inflater.inflate(R.menu.carddemo_multichoice, menu);
             return true;
@@ -145,26 +157,21 @@ public class ListGplayCardCABFragment extends BaseFragment {
         }
 
         @Override
-        protected void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked, CardView cardView, Card card) {
+        public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked, CardView cardView, Card card) {
             Toast.makeText(getContext(), "Click;" + position + " - " + checked, Toast.LENGTH_SHORT).show();
         }
 
         private void discardSelectedItems(ActionMode mode) {
-            SparseBooleanArray checked = mCardListView.getCheckedItemPositions();
-            Card[] items = new Card[checked.size()];
-
-            for (int i =  checked.size()-1; i>=0; i--) {
-                if (checked.valueAt(i) == true) {
-                    items[i] = getItem((int) checked.keyAt(i));
-                }
-            }
+            ArrayList<Card> items = getSelectedCards();
             for (Card item : items) {
                 remove(item);
             }
             mode.finish();
         }
 
+
         private String formatCheckedCard() {
+
             SparseBooleanArray checked = mCardListView.getCheckedItemPositions();
             StringBuffer sb = new StringBuffer();
             for (int i = 0; i < checked.size(); i++) {

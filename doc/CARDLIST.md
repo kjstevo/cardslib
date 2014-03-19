@@ -6,8 +6,11 @@ In this page you can find info about:
 * [Use your custom layout for each row](#use-your-custom-layout-for-each-row)
 * [Cards with different inner layouts](#cards-with-different-inner-layouts)
 * [Swipe and Undo in `CardListView`](#swipe-and-undo-in-cardlistview)
+* [Swipe and Undo with a custom UndoBar](#swipe-and-undo-with-a-custom-undobar)
 * [How to use an external adapter](#how-to-use-an-external-adapter)
 * [Using a cursor adapter](#using-a-cursor-adapter)
+* [Using a CardList in MultiChoiceMode](#using-a-cardlist-in-multichoicemode)
+
 
 
 ### Creating a base CardList
@@ -240,6 +243,69 @@ You can see the example in `ListGplayUndoCardFragment`.
 ![Screen](https://github.com/gabrielemariotti/cardslib/raw/master/demo/images/card/cardWithUndo.png)
 
 
+### Swipe and Undo with a custom UndoBar
+
+You can provide a custom UndoBar.
+
+This UndoBar has to contains these elements:
+
+1. A `TextView`
+
+2. A `Button`
+
+3. A root element with an id attribute
+
+You should use the same Ids provided in the default layout `list_card_undo_message`, but if you have to use different ids you can use the `CardArrayAdapter.setUndoBarUIElements`:
+
+Example:
+``` xml
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/my_undobar"
+        style="@style/list_card_UndoBar"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/my_undobar_message"
+            style="@style/list_card_UndoBarMessage"/>
+
+        <Button
+            android:id="@+id/my_undobar_button"
+            style="@style/list_card_UndoBarButton"/>
+
+    </LinearLayout>
+```
+
+``` java
+      CardArrayAdapter mCardArrayAdapter = new CardArrayAdapter(getActivity(),cards);
+
+      //It is very important to set the UndoBarUIElements before to call the setEnableUndo(true);
+      mCardArrayAdapter.setUndoBarUIElements(new UndoBarController.UndoBarUIElements() {
+                  @Override
+                  public int getUndoBarId() {
+                      return R.id.myid_undobar;
+                  }
+
+                  @Override
+                  public int getUndoBarMessageId() {
+                      return R.id.my_undobar_message;
+                  }
+
+                  @Override
+                  public int getUndoBarButtonId() {
+                      return R.id.my_undobar_button;
+                  }
+              });
+      mCardArrayAdapter.setEnableUndo(true);
+
+      if (mListView!=null){
+          mListView.setAdapter(mCardArrayAdapter);
+      }
+
+```
+
+If you would like to use more ListViews in the same screen, you have to use the code above.
+
+
 ### How to use an external adapter
 
 Some libraries use a own adapter as [ListViewAnimations](https://github.com/gabrielemariotti/cardslib/tree/master/doc/OTHERLIBRARIES.md#using-card-with-listviewanimations)
@@ -317,3 +383,126 @@ Last create your `MyCursorCardAdapter` instance, get a reference to the `CardLis
 ```
 
 With the this type of cursor, currently you can't use the swipe and undo actions.
+
+
+### Using a CardList in MultiChoiceMode
+
+If you would like to have a `CardList` with a MultiChoiceMode built-in feature you can use a `CardArrayMultiChoiceAdapter`.
+
+This class extends `CardArrayAdapter` and preserves all its features.
+
+First of all you have to create your CardArrayMultiChoiceAdapter extending the base class and implementing the missing methods.
+
+``` java
+
+    public class MyCardArrayMultiChoiceAdapter extends CardArrayMultiChoiceAdapter {
+
+            public MyCardArrayMultiChoiceAdapter(Context context, List<Card> cards) {
+                super(context, cards);
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                super.onCreateActionMode(mode, menu);
+
+                mActionMode=mode; // to manage mode in your Fragment/Activity
+
+                //If you would like to inflate your menu
+                MenuInflater inflater = mode.getMenuInflater();
+                inflater.inflate(R.menu.carddemo_multichoice, menu);
+
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                if (item.getItemId() == R.id.menu_share) {
+                    Toast.makeText(getContext(), "Share;" + formatCheckedCard(), Toast.LENGTH_SHORT).show();
+                    return true;
+                }
+                if (item.getItemId() == R.id.menu_discard) {
+                    discardSelectedItems(mode);
+                    return true;
+                }
+                return false;
+            }
+
+            @Override
+            public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked, CardView cardView, Card card) {
+                Toast.makeText(getContext(), "Click;" + position + " - " + checked, Toast.LENGTH_SHORT).show();
+            }
+
+            private void discardSelectedItems(ActionMode mode) {
+                ArrayList<Card> items = getSelectedCards();
+                for (Card item : items) {
+                    remove(item);
+                }
+                mode.finish();
+            }
+
+
+            private String formatCheckedCard() {
+
+                SparseBooleanArray checked = mCardListView.getCheckedItemPositions();
+                StringBuffer sb = new StringBuffer();
+                for (int i = 0; i < checked.size(); i++) {
+                    if (checked.valueAt(i) == true) {
+                        sb.append("\nPosition=" + checked.keyAt(i));
+                    }
+                }
+                return sb.toString();
+            }
+
+        }
+```
+It is very important, if you override the `onCreateActionMode()` method, to call the `super.onCreateActionMode()`.
+
+Then you have implement this `onLongClickListener` in your cards:
+
+``` java
+       card.setOnLongClickListener(new Card.OnLongCardClickListener() {
+            @Override
+            public boolean onLongClick(Card card, View view) {
+                return mCardArrayAdapter.startActionMode(getActivity());
+
+            }
+       });
+```
+
+Finally get a reference to the `CardListView` from your code and set your adapter.
+
+``` java
+        MyCardArrayMultiChoiceAdapter mCardGridArrayAdapter = new MyCardArrayMultiChoiceAdapter(getActivity(), cards);
+
+        CardListView listView = (CardListView) getActivity().findViewById(R.id.myGrid);
+        if (listView!=null){
+             listView.setAdapter(mCardGridArrayAdapter);
+             listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        }
+```
+
+When an item is clicked and the action mode was already active, changes the selection state of the clicked item, just as if it had been long clicked.
+
+As you can see in code above use `ArrayList<Card> items = getSelectedCards();`  to get the selected cards.
+
+You need to implement the `onItemCheckedStateChanged` method if you would like to handle the click on a Card.
+
+If you would like to customize the sentence "item selected", you can do it in your project overriding these strings in `res/values-XX/strings.xml`.
+
+``` xml
+    <!-- Card selected item with CAB -->
+    <plurals name="card_selected_items">
+        <item quantity="one">1 item selected</item>
+        <item quantity="other">%d items selected</item>
+    </plurals>
+
+```
+
+
+
+ You can see an example in `GridGplayCABFragment`  [(source)](https://github.com/gabrielemariotti/cardslib/tree/master/demo/stock/src/main/java/it/gmariotti/cardslib/demo/fragment/ListGplayCardCABFragment.java).

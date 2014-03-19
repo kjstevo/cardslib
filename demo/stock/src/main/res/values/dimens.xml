@@ -1,6 +1,6 @@
 <!--
   ~ *******************************************************************************
-  ~   Copyright (c) 2013 Gabriele Mariotti.
+  ~   Copyright (c) 2013-2014 Gabriele Mariotti.
   ~
   ~   Licensed under the Apache License, Version 2.0 (the "License");
   ~   you may not use this file except in compliance with the License.
@@ -44,5 +44,6 @@
     <dimen name="carddemo_gplay_grid_columnwidth_card">125dp</dimen>
 
     <dimen name="carddemo_gricursor_width">125dp</dimen>
+    <dimen name="card_rose">250dp</dimen>
 
 </resources>
